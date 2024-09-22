@@ -40,6 +40,8 @@
 
 #if defined(__cplusplus)
 #include <iostream>
+#include <string>
+#include <conio.h>
 
 
 void __ANSI_TEXT_TYPE(size_t _text_type);   //文本格式设置
@@ -86,6 +88,8 @@ void __ANSI_DISABLE_CURSOR();   //禁用光标
 
 void __ANSI_ENABLE_CURSOR();    //启用光标
 
+void __ANSI_GOTO_INITIAL(size_t lines = 1);     //将光标移至某行行首
+
 
     #endif  //__cplusplus
 
@@ -107,6 +111,10 @@ void __ANSI_ENABLE_CURSOR();    //启用光标
 void __ANSI_TERM_RESET(size_t mode);   //复原终端
 
 void __ANSI_INPUT_RESET();  //输入重置
+
+template<typename _Type>
+void __ANSI_LOCK_CURSOR(_Type &Type,size_t length);  //输入后锁定光标
+void __ANSI_LOCK_CURSOR(std::string &str,size_t length);
 
     #endif //_cplusplus
 

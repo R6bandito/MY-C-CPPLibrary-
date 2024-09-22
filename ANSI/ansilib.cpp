@@ -147,12 +147,14 @@ void __ANSI_ENABLE_AUTO_NEWLINE()
 void resetTextAttributes();
 void __ANSI_TERM_RESET(size_t mode)
 {
-    if (mode == 1){
+    if (mode == 1)
+    {
         resetTextAttributes();
         __ANSI_CLR_TERM();
         __ANSI_ENABLE_AUTO_NEWLINE();
     }
-    else if(mode == 0){
+    else if (mode == 0)
+    {
         resetTextAttributes();
     }
 }
@@ -172,6 +174,44 @@ void __ANSI_INPUT_RESET()
     __ANSI_LINECLR();
     __ANSI_CURSOR_READ();
     __ANSI_LINECLR_CUR();
+}
+
+/*移到行首
+lines-----行数参数,默认为1
+*/
+void __ANSI_GOTO_INITIAL(size_t lines)
+{
+    std::cout << "\033[" << lines << "H";
+}
+
+/*该函数已包含了输入函数，其功能是限定输入宽度。通过传入参数来
+进行限定*/
+template <typename _Type>
+void __ANSI_LOCK_CURSOR(_Type &Type, size_t length)
+{
+}
+void __ANSI_LOCK_CURSOR(std::string &str,const size_t length)
+{
+    size_t cont = 0;
+    str.resize(length); // 空间设置
+    while (true){
+        str[cont] = _getch();
+        if((str[cont] > 32 && str[cont] < 127) && cont<length)
+            std::cout<<str[cont];
+
+        if(cont == length-1){
+            __ANSI_DISABLE_CURSOR();
+            str[cont-1] = '\0';
+        }
+
+        if(str[cont] == '\b'){
+            std::cout<<"\b \b";     //从终端上删除该字符
+            str[--cont] = '\0';     //从容器中删除该字符
+        }
+
+        if(str[cont++] == '\r')   break;
+    }
+    __ANSI_ENABLE_CURSOR();
 }
 
 #endif //_cplusplus
